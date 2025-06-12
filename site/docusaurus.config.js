@@ -1,5 +1,6 @@
 const { moduleSizes, PURE_DOWNLOAD_SNIPPET } = require('./lib/pure');
 const { version } = require('../package.json');
+// Docusaurus configuration for Pure CSS library
 
 module.exports = {
     title: 'Pure',
@@ -24,12 +25,10 @@ module.exports = {
         ],
     ],
     projectName: 'pure-css.github.io',
-    scripts: [
-        {
-            src: 'https://kit.fontawesome.com/f7f35653b1.js',
-            defer: true,
-        }
-    ],
+    scripts: [{
+        src: 'https://kit.fontawesome.com/f7f35653b1.js',
+        defer: true,
+    }],
     themes: ['@docusaurus/theme-classic'],
     trailingSlash: true,
     customFields: {
