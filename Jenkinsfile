@@ -2,18 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'MAVEN_HOME'     // Use Maven installed in Jenkins (define in Global Tools)
-    }
-
-    environment {
-        WAR_NAME = "html-webapp.war"
+        maven 'MAVEN_HOME'    // must match your Maven install name in Jenkins → Global Tool Configuration
     }
 
     stages {
-
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                git url: 'https://github.com/ishwarbarhate/html.git'
+                git branch: 'main',
+                    url: 'https://github.com/ishwarbarhate/html.git'
             }
         }
 
@@ -25,26 +21,18 @@ pipeline {
 
         stage('Archive WAR') {
             steps {
-                archiveArtifacts artifacts: "target/*.war", fingerprint: true
+                // This will keep your WAR as a build artifact in Jenkins
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
+    }
 
-        // OPTIONAL: Deploy to Tomcat
-        stage('Deploy to Tomcat') {
-            when {
-                expression { fileExists("target/${env.WAR_NAME}") }
-            }
-            steps {
-                script {
-                    def tomcatUrl = "http://localhost:8080/manager/text/deploy?path=/html-webapp&update=true"
-                    def warFile = "target/${env.WAR_NAME}"
-                    withCredentials([usernamePassword(credentialsId: 'tomcat-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                        sh """
-                            curl -u $USER:$PASS -T ${warFile} "${tomcatUrl}"
-                        """
-                    }
-                }
-            }
+    post {
+        success {
+            echo "✅ .war built and archived successfully!"
+        }
+        failure {
+            echo "❌ Build failed."
         }
     }
 }
