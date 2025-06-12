@@ -17,8 +17,6 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        
-
         stage('Docker Deploy') {
             steps {
                 sh 'docker rm -f html-webapp || true'
