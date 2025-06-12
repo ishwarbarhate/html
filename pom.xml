@@ -11,7 +11,14 @@
   <packaging>war</packaging>
 
   <build>
-    <!-- This sets the name of the generated WAR: target/html-webapp.war -->
     <finalName>html-webapp</finalName>
+
+    <plugins>
+      <!-- Override the default war plugin with a modern version -->
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
+    </plugins>
   </build>
 </project>
