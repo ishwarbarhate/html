@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'MAVEN_HOME'    // must match your Maven install name in Jenkins → Global Tool Configuration
+        maven 'Maven 3'  // Or the name you configured in Jenkins > Global Tool Configuration
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/ishwarbarhate/html.git'
+                git 'https://github.com/ishwarbarhate/html.git'
             }
         }
 
@@ -19,37 +18,26 @@ pipeline {
             }
         }
 
-        stage('Archive WAR') {
+        stage('Docker Deploy') {
             steps {
-                // This will keep your WAR as a build artifact in Jenkins
-                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
+                sh 'docker rm -f html-webapp || true'
+                sh """
+                  docker run -d \
+                    --name html-webapp \
+                    -p 8080:8080 \
+                    -v ${WORKSPACE}/target/html-webapp.war:/usr/local/tomcat/webapps/html-webapp.war \
+                    tomcat:9.0
+                """
             }
         }
     }
 
     post {
         success {
-            echo "✅ .war built and archived successfully!"
+            echo 'Build succeeded!'
         }
         failure {
-            echo "❌ Build failed."
+            echo 'Build failed!'
         }
-
-        stage('Docker Deploy') {
-  steps {
-    // Remove any old container
-    sh 'docker rm -f html-webapp || true'
-    // Launch Tomcat with your WAR mounted
-    sh """
-      docker run -d \
-        --name html-webapp \
-        -p 8080:8080 \
-        -v ${WORKSPACE}/target/html-webapp.war:/usr/local/tomcat/webapps/html-webapp.war \
-        tomcat:9.0
-    """
-  }
-}
-
     }
 }
-
