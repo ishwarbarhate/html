@@ -2,14 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3'  // Or the name you configured in Jenkins > Global Tool Configuration
+        maven 'Maven 3'  // Make sure this matches Jenkins Maven name
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                git 'https://github.com/ishwarbarhate/html.git'
+                git branch: 'main', url: 'https://github.com/ishwarbarhate/html.git'
             }
         }
 
@@ -18,11 +17,12 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+
         stage('Docker Deploy') {
             steps {
                 sh 'docker rm -f html-webapp || true'
                 sh """
-                  docker run -d \
+                    docker run -d \
                     --name html-webapp \
                     -p 8080:8080 \
                     -v ${WORKSPACE}/target/html-webapp.war:/usr/local/tomcat/webapps/html-webapp.war \
@@ -34,10 +34,10 @@ pipeline {
 
     post {
         success {
-            echo 'Build succeeded!'
+            echo '✅ Build and deployment succeeded!'
         }
         failure {
-            echo 'Build failed!'
+            echo '❌ Build or deployment failed.'
         }
     }
 }
