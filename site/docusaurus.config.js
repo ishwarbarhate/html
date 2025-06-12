@@ -2,6 +2,7 @@ const { moduleSizes, PURE_DOWNLOAD_SNIPPET } = require('./lib/pure');
 const { version } = require('../package.json');
 // Docusaurus configuration for Pure CSS library
 
+
 module.exports = {
     title: 'Pure',
     tagline: 'Pure is a ridiculously tiny CSS library you can use to start any web project.',
