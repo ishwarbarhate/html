@@ -14,10 +14,13 @@
     <finalName>html-webapp</finalName>
 
     <plugins>
-      <!-- Override the default war plugin with a modern version -->
+      <!-- Use a modern WAR plugin and disable missing-web.xml failure -->
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.3.2</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
       </plugin>
     </plugins>
   </build>
