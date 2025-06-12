@@ -34,5 +34,21 @@ pipeline {
         failure {
             echo "❌ Build failed."
         }
+
+        stage('Docker Deploy') {
+  steps {
+    // Remove any old container
+    sh 'docker rm -f html-webapp || true'
+    // Launch Tomcat with your WAR mounted
+    sh """
+      docker run -d \
+        --name html-webapp \
+        -p 8080:8080 \
+        -v ${WORKSPACE}/target/html-webapp.war:/usr/local/tomcat/webapps/html-webapp.war \
+        tomcat:9.0
+    """
+  }
+}
+
     }
 }
